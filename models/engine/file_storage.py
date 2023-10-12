@@ -8,43 +8,43 @@ class FileStorage():
     """
     serializes and deserializes python objects
     """
-    __file_path = file.json
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
         """
         returns a dictionary __objects
         """
-        return __objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """
         sets in __objects the obj with the key <obj class name>.id
         """
-        dc = obj.to_dict()
-        File_storage[dc.__class__ + "." + dc.id] = obj
+        name = obj.__class__.__name__
+        FileStorage.__objects[f"{name}.{obj.id}"] = obj
 
     def save(self):
         """
         serializes FileStorage.__objects
         """
-        sr = FileStorage.__objects
-        fname = FileStorage.__file_path
-        new = {k: v.to_dict for k, v in sr}
-        with open(fname, "w") as file:
-            json.dump(data, file)
+        my_dict = {}
+        for key, value in self.__objects.items():
+            my_dict[key] = value.to_dict()
+        with open(self.__file_path, 'w', encoding="UTF-8") as f:
+            json.dump(my_dict, f)
 
     def reload(self):
         """
         deserializes a json file
         """
-        name = FileStorage.__file_path
         try:
+            name = FileStorage.__file_path
             deserialized = {}
             with open(name, "r") as file:
                 dsr = json.load(file)
             for k, v in dsr.items():
-                name = v["__class__"]
-                FileStorage.__objects[k] = name(v)
+                cls_name = v["__class__"]
+                self.__objects[k] = eval(cls_name)(**v)
         except FileNotFoundError:
             pass

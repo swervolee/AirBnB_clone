@@ -27,15 +27,14 @@ class BaseModel():
                 if k == "__class__":
                     continue
                 if k == "created_at" or k == "updated_at":
-                    tform = "%Y-%m-%dT%H:%M:%S.%f"
-                    self.__dict__[k] = datetime.strptime(v, tform)
+                    setattr(self, k, datetime.fromisoformat(v))
                 else:
                     setattr(self, k, v)
         else:
-            self.id = uuid.uuid4()
+            self.id = str(uuid.uuid4())
             self.created_at = datetime.today()
             self.updated_at = self.created_at
-            models.storage.new()
+            models.storage.new(self)
 
     def __str__(self):
         """
