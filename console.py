@@ -6,6 +6,7 @@ import cmd
 import models
 from models.base_model import BaseModel
 from datetime import datetime
+from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
@@ -48,6 +49,38 @@ class HBNBCommand(cmd.Cmd):
             new.save()
             print(f"{new.id}")
 
+    def do_show(self, cmd=None):
+        """
+        Prints the string representation of an instance
+        given the class name and the instance id
+        """
+
+        name, id = None, None
+        dc = storage.all()
+
+        if cmd:
+            cmd_list = cmd.split(" ")
+            if len(cmd_list) >= 1:
+                name = cmd_list[0]
+
+            if len(cmd_list) >= 2:
+                id = cmd_list[1]
+
+
+        if not cmd:
+            print("** class name is  missing **")
+
+        elif not name or name not in self.class_list:
+            print("** class doesnt exist **")
+
+        elif not id:
+            print("** instance id missing **")
+
+        elif f"{name}.{id}" not in dc:
+            print("** no instance found **")
+
+        else:
+            print(dc[f"{name}.{id}"])
 
 
 
