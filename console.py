@@ -2,6 +2,7 @@
 """
 A console for the Hbnb
 """
+import sys
 import cmd
 import models
 from models.base_model import BaseModel
@@ -12,7 +13,7 @@ from models import storage
 class HBNBCommand(cmd.Cmd):
     """Hbnb commandline"""
 
-    prompt = "(hbnb) "
+    prompt = "(hbnb) " if sys.__stdin__.isatty() else ""
 
     class_list = {"BaseModel": BaseModel}
 
@@ -22,6 +23,13 @@ class HBNBCommand(cmd.Cmd):
         """
         print("")
         return True
+
+    def preloop(self):
+        """
+        Prints the prompt only if isatty is false
+        """
+        if not sys.__stdin__.isatty():
+            print("(hbnb)")
 
     def do_quit(self, cmd):
         """
@@ -81,6 +89,62 @@ class HBNBCommand(cmd.Cmd):
 
         else:
             print(dc[f"{name}.{id}"])
+
+    def do_destroy(self, cmd=None):
+        """
+        Destroys an instance based on class name and
+        instance id
+        """
+
+        name, id = None, None
+        all_objects = storage.all()
+        if cmd:
+            cmd_list = cmd.split(" ")
+            if len(cmd_list) >= 1:
+                name = cmd_list[0]
+            if len(cmd_list) >= 2:
+                id = cmd_list[1]
+
+        if not name:
+            print("** class name missing **")
+        elif not id:
+            print("** instance id mising **")
+        elif f"{name}.{id}" not in all_objects:
+            print("** no instance found **")
+        else:
+            all_objects.pop(f"{name}.{id}")
+            storage.save()
+
+    def do_all(self, cmd=None):
+        """
+        Prints all instances of the class name is absent
+        else prints all the instances of the given class
+        """
+        all_objects = storage.all()
+
+        if not cmd:
+            for k in all_objects:
+                print(all_objects[k])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
