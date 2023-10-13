@@ -125,7 +125,18 @@ class HBNBCommand(cmd.Cmd):
         if not cmd:
             for k in all_objects:
                 print(all_objects[k])
-
+        else:
+            cmd_list = cmd.split()
+            if len(cmd_list) < 1:
+                print("** class name missing **")
+            else:
+                class_name = cmd_list[0]
+                if class_name not in BaseModel.__subclasses__():
+                    print("** class doesn't exist **")
+                else:
+                    for k, v in all_objects.items():
+                        if k.split('.')[0] == class_name:
+                            print(v)
 
 
 
