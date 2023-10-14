@@ -281,6 +281,13 @@ class HBNBCommand(cmd.Cmd):
             id = line[line.find("(", 1) + 1 : line.find(")", 1)]
             joined_command = " ".join([cls_name, id])
             self.do_destroy(joined_command)
-
+        if comd == "update":
+            arg = line[line.find("(") + 1 : line.find(")")]
+            arg = arg.split(",")
+            id = arg[0].strip()
+            attr_name = arg[1].strip()
+            attr_value = arg[2].strip()
+            joined = " ".join([cls_name, id, attr_name, attr_value])
+            self.do_update(joined)
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
