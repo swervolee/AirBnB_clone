@@ -124,22 +124,51 @@ class HBNBCommand(cmd.Cmd):
 
         if not cmd:
             for k in all_objects:
-                print(all_objects[k])
+                print([str(all_objects[k])])
         else:
-            cmd_list = cmd.split()
+            cmd_list = cmd.split(" ")
             if len(cmd_list) < 1:
                 print("** class name missing **")
             else:
                 class_name = cmd_list[0]
-                if class_name not in BaseModel.__subclasses__():
+                if class_name not in self.class_list:
                     print("** class doesn't exist **")
                 else:
                     for k, v in all_objects.items():
                         if k.split('.')[0] == class_name:
-                            print(v)
+                            print([str(v)])
 
+    def do_update(self, cmd=None):
+        """
+        Updates a class with new attributes
+        or new values
+        """
+        cls_name, id, attr_name, attr_val = None, None, None, None
+        upd = datetime.now()
+        all_objects = storage.all()
 
+        arg_tuple = cmd.partition(" ")
+        if arg_tuple[0]:
+            cls_name = arg_tuple[0]
+        else:
+            print("** class name missing **")
+            return
 
+        if class_name not in self.class_list:
+            print("** class doesn't exist **")
+            return
+
+        arg_tuple = arg_tuple.partition(" ")
+        if arg_tuple[0]:
+            id = arg_tuple[0]
+        else:
+            print("** instance id missing **")
+            return
+
+        if not f"{cls_name}.{id}" in storage.all():
+            print("** no instance found **")
+            return
+        
 
 
 
