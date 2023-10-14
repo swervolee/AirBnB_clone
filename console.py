@@ -2,13 +2,18 @@
 """
 A console for the Hbnb
 """
-import sys
 import cmd
-import models
+import sys
 from models.base_model import BaseModel
-from datetime import datetime
-from models import storage
+from models.__init__ import storage
 from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+import models
+from datetime import datetime
 
 
 class HBNBCommand(cmd.Cmd):
@@ -16,7 +21,10 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) " if sys.__stdin__.isatty() else ""
 
-    class_list = {"BaseModel": BaseModel, "User": User}
+    class_list = {"BaseModel": BaseModel, "User": User,
+                  "Place": Place, "State": State,
+                  "City": City, "Amenity": Amenity,
+                  "Review": Review}
 
     def do_EOF(self, signal):
         """
