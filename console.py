@@ -73,8 +73,6 @@ class HBNBCommand(cmd.Cmd):
 
             if len(cmd_list) >= 2:
                 id = cmd_list[1]
-
-
         if not cmd:
             print("** class name is  missing **")
 
@@ -165,39 +163,11 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
 
-        if not f"{cls_name}.{id}" in storage.all():
+        key = f"{cls_name}.{id}"
+
+        if key not in storage.all():
             print("** no instance found **")
             return
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
