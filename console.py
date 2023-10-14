@@ -8,6 +8,7 @@ import models
 from models.base_model import BaseModel
 from datetime import datetime
 from models import storage
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -15,7 +16,7 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) " if sys.__stdin__.isatty() else ""
 
-    class_list = {"BaseModel": BaseModel}
+    class_list = {"BaseModel": BaseModel, "User": User}
 
     def do_EOF(self, signal):
         """
