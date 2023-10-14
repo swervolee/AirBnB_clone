@@ -57,6 +57,13 @@ class HBNBCommand(cmd.Cmd):
             new.save()
             print(f"{new.id}")
 
+    def help_create(self):
+        """
+        Help information for the create command
+        """
+        print("Creates a new instance")
+        print("[Usage]: create <className>")
+
     def do_show(self, cmd=None):
         """
         Prints the string representation of an instance
@@ -88,6 +95,13 @@ class HBNBCommand(cmd.Cmd):
         else:
             print(dc[f"{name}.{id}"])
 
+    def help_show(self):
+        """
+        Help info for the show command
+        """
+        print("Displays a single instance")
+        print("[Usage]: show <ClassName> <Id>\n")
+
     def do_destroy(self, cmd=None):
         """
         Destroys an instance based on class name and
@@ -107,11 +121,20 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif not id:
             print("** instance id mising **")
+        elif name not in self.cls_list:
+            print("** class doesn't exist **")
         elif f"{name}.{id}" not in all_objects:
             print("** no instance found **")
         else:
             all_objects.pop(f"{name}.{id}")
             storage.save()
+
+    def help_destroy(self):
+        """
+        help info for the destroy command
+        """
+        print("Destroys a class instance")
+        print("[usage] destroy <className> <ObjectId>\n")
 
     def do_all(self, cmd=None):
         """
@@ -136,13 +159,19 @@ class HBNBCommand(cmd.Cmd):
                         if k.split('.')[0] == class_name:
                             print([str(v)])
 
+    def help_all(self):
+        """
+        Help for the all command
+        """
+        print("Prints all object instances of a command")
+        print("[usage]: all <ClassName>\n")
+
     def do_update(self, cmd=None):
         """
         Updates a class with new attributes
         or new values
         """
         cls_name, id, attr_name, attr_val = None, None, None, None
-        upd = datetime.now()
         all_objects = storage.all()
 
         arg_tuple = cmd.partition(" ")
@@ -203,6 +232,13 @@ class HBNBCommand(cmd.Cmd):
                     attr_value = type(getattr(eval(cls_name), attr_name))(attr_value)
                 item_dict.__dict__.update({attr_name: attr_value})
                 item_dict.save()
+
+    def help_update(self):
+        """
+        Help information for updating class
+        """
+        print("Updates a class intance with new information")
+        print("[usage]: update <ClassName> <Id> <AtrrName> <AttrValue>\n")
 
 
 if __name__ == "__main__":
