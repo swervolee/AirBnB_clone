@@ -273,6 +273,10 @@ class HBNBCommand(cmd.Cmd):
             self.do_all(cls_name)
         if comd == "count":
             self.count(cls_name)
+        if comd == "show":
+            id = line[line.find("(", 1) + 1 : line.find(")", 1)]
+            joined_command = " ".join([cls_name, id])
+            self.do_show(joined_command)
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
