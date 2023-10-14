@@ -152,11 +152,11 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        if class_name not in self.class_list:
+        if cls_name not in self.class_list:
             print("** class doesn't exist **")
             return
 
-        arg_tuple = arg_tuple.partition(" ")
+        arg_tuple = arg_tuple[2].partition(" ")
         if arg_tuple[0]:
             id = arg_tuple[0]
         else:
@@ -168,6 +168,41 @@ class HBNBCommand(cmd.Cmd):
         if key not in storage.all():
             print("** no instance found **")
             return
+        item_dict = all_objects[key]
+
+        if '{' in arg_tuple[2] and '}' in arg_tuple[2] and type(eval(arg_tuple[2])) is dict:
+            cmd_list = []
+            for k, v in eval(arg_tuple[2]).items():
+                cmd_list.append(k)
+                cmd_list.append(v)
+        else:
+            arg = arg_tuple[2]
+            if arg and arg[0] == "\"":
+                limit = arg.find("\"", 1)
+                attr_name = arg[1:limit]
+                arg = arg[limit + 1]
+            arg = arg.partition(" ")
+
+            if not attr_name and arg[0] != " ":
+                attr_name = arg[0]
+            if arg[2] and arg[2][0] == "\"":
+                attr_val = arg[2][1: arg[2].find("\"", 1)]
+            if arg[2] and not attr_val:
+                attr_val = arg[2].partition(" ")[0]
+            cmd_list = [attr_name, attr_val]
+        for i in range(len(cmd_list)):
+            if i % 2 == 0:
+                attr_name, attr_value = cmd_list[i], cmd_list[i + 1]
+                if not attr_name:
+                    print("** attribute name missing **")
+                    return
+                if not attr_value:
+                    print("** value missing **")
+                    return
+                if hasattr(eval(cls_name)(), attr_name):
+                    attr_value = type(getattr(eval(cls_name), attr_name))(attr_value)
+                item_dict.__dict__.update({attr_name: attr_value})
+                item_dict.save()
 
 
 if __name__ == "__main__":
