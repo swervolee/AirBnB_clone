@@ -23,7 +23,7 @@ class BaseModel():
             args - non keyworded argument
             kwargs - keyworded argument(dictionary)
         """
-        if len(kwargs) != 0:
+        if kwargs and len(kwargs) != 0:
             for k, v in kwargs.items():
                 if k == "__class__":
                     continue
@@ -31,6 +31,12 @@ class BaseModel():
                     setattr(self, k, datetime.fromisoformat(v))
                 else:
                     setattr(self, k, v)
+            if "id" not in kwargs:
+                self.id = str(uuid4())
+            if "created_at" not in kwargs:
+                self.created_at = datetime.now()
+            if "updated_at" not in kwargs:
+                self.updated_at = datetime.now()
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.today()
@@ -49,6 +55,7 @@ class BaseModel():
         time
         """
         self.updated_at = datetime.today()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
