@@ -25,6 +25,7 @@ class HBNBCommand(cmd.Cmd):
                   "Place": Place, "State": State,
                   "City": City, "Amenity": Amenity,
                   "Review": Review}
+    dots = ["all", "count", "show", "destroy", "update"]
 
     def do_EOF(self, signal):
         """
@@ -145,28 +146,19 @@ class HBNBCommand(cmd.Cmd):
         print("Destroys a class instance")
         print("[usage] destroy <className> <ObjectId>\n")
 
-    def do_all(self, cmd=None):
+    def do_all(self, arg=None):
         """
         Prints all instances of the class name is absent
         else prints all the instances of the given class
         """
-        all_objects = storage.all()
-
-        if not cmd:
-            for k in all_objects:
-                print([str(all_objects[k])])
+        if not arg:
+            print([str(v) for k, v in models.storage.all().items()])
         else:
-            cmd_list = cmd.split(" ")
-            if len(cmd_list) < 1:
-                print("** class name missing **")
-            else:
-                class_name = cmd_list[0]
-                if class_name not in self.class_list:
-                    print("** class doesn't exist **")
-                else:
-                    for k, v in all_objects.items():
-                        if k.split('.')[0] == class_name:
-                            print([str(v)])
+            if not self.class_list.get(arg):
+                print("** class doesn't exist **")
+                return False
+            print([str(v) for k, v in models.storage.all().items()
+                   if type(v) is self.class_list.get(arg)])
 
     def help_all(self):
         """
@@ -249,6 +241,24 @@ class HBNBCommand(cmd.Cmd):
         print("Updates a class intance with new information")
         print("[usage]: update <ClassName> <Id> <AtrrName> <AttrValue>\n")
 
+    def default(self, cmd):
+        """
+        Handles class commands
+        """
+        line = cmd[:]
+        if not("." in line and "(" in line and ")" in line):
+            print(f"*** Unknown syntax: {cmd}")
+            return
+        cls_name = line[: line.find(".", 1)]
+        if cls_name not in self.class_list:
+            print(f"*** Unknown syntax: {line}")
+            return
+        comd = line[line.find(".", 1) + 1 : line.find("(", 1)]
+        if comd not in self.dots:
+            print(f"*** Unknown syntax: {line}")
+            return
+        if comd == "all":
+            self.do_all(cls_name)
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
