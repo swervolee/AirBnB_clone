@@ -241,6 +241,18 @@ class HBNBCommand(cmd.Cmd):
         print("Updates a class intance with new information")
         print("[usage]: update <ClassName> <Id> <AtrrName> <AttrValue>\n")
 
+    def count(self, cmd):
+        """
+        counts the number of instances of a class
+        """
+        all_objects = storage.all()
+        count = 0
+
+        for k in all_objects:
+            if cmd in k:
+                count += 1
+        print(count)
+
     def default(self, cmd):
         """
         Handles class commands
@@ -259,6 +271,8 @@ class HBNBCommand(cmd.Cmd):
             return
         if comd == "all":
             self.do_all(cls_name)
+        if comd == "count":
+            self.count(cls_name)
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
