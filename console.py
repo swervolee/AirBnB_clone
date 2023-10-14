@@ -277,6 +277,10 @@ class HBNBCommand(cmd.Cmd):
             id = line[line.find("(", 1) + 1 : line.find(")", 1)]
             joined_command = " ".join([cls_name, id])
             self.do_show(joined_command)
+        if comd == "destroy":
+            id = line[line.find("(", 1) + 1 : line.find(")", 1)]
+            joined_command = " ".join([cls_name, id])
+            self.do_destroy(joined_command)
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
