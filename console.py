@@ -79,7 +79,6 @@ class HBNBCommand(cmd.Cmd):
         Prints the string representation of an instance
         given the class name and the instance id
         """
-
         name, id = None, None
         dc = storage.all()
 
@@ -200,7 +199,8 @@ class HBNBCommand(cmd.Cmd):
             return
         item_dict = all_objects[key]
 
-        if '{' in arg_tuple[2] and '}' in arg_tuple[2] and type(eval(arg_tuple[2])) is dict:
+        if '{' in arg_tuple[2] and '}' in arg_tuple[2] and\
+           type(eval(arg_tuple[2])) is dict:
             cmd_list = []
             for k, v in eval(arg_tuple[2]).items():
                 cmd_list.append(k)
@@ -230,7 +230,8 @@ class HBNBCommand(cmd.Cmd):
                     print("** value missing **")
                     return
                 if hasattr(eval(cls_name)(), attr_name):
-                    attr_value = type(getattr(eval(cls_name), attr_name))(attr_value)
+                    attr_value = type(getattr(eval(cls_name),
+                                              attr_name))(attr_value)
                 setattr(item_dict, attr_name, attr_value)
                 item_dict.save()
 
@@ -241,7 +242,7 @@ class HBNBCommand(cmd.Cmd):
         print("Updates a class intance with new information")
         print("[usage]: update <ClassName> <Id> <AtrrName> <AttrValue>\n")
 
-    def count(self, cmd):
+    def do_count(self, cmd):
         """
         counts the number of instances of a class
         """
@@ -265,24 +266,24 @@ class HBNBCommand(cmd.Cmd):
         if cls_name not in self.class_list:
             print(f"*** Unknown syntax: {line}")
             return
-        comd = line[line.find(".", 1) + 1 : line.find("(", 1)]
+        comd = line[line.find(".", 1) + 1: line.find("(", 1)]
         if comd not in self.dots:
             print(f"*** Unknown syntax: {line}")
             return
         if comd == "all":
             self.do_all(cls_name)
         if comd == "count":
-            self.count(cls_name)
+            self.do_count(cls_name)
         if comd == "show":
-            id = line[line.find("(", 1) + 1 : line.find(")", 1)]
+            id = line[line.find("(", 1) + 1: line.find(")", 1)]
             joined_command = " ".join([cls_name, id])
             self.do_show(joined_command)
         if comd == "destroy":
-            id = line[line.find("(", 1) + 1 : line.find(")", 1)]
+            id = line[line.find("(", 1) + 1: line.find(")", 1)]
             joined_command = " ".join([cls_name, id])
             self.do_destroy(joined_command)
         if comd == "update":
-            arg = line[line.find("(", 1) + 1 : line.find(")", 1)]
+            arg = line[line.find("(", 1) + 1: line.find(")", 1)]
             arg = arg.partition(", ")
             id = arg[0]
             print(id)
@@ -296,5 +297,7 @@ class HBNBCommand(cmd.Cmd):
             joined = " ".join([cls_name, id, attrs])
             print(joined)
             self.do_update(joined)
+
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
