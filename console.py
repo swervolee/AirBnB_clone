@@ -58,12 +58,12 @@ class HBNBCommand(cmd.Cmd):
         Creates a new instance of BaseModel saves it
         to json file and prints out the id of the instance
         """
-        if not cmd:
+        if not cmd:  # cmd is none in default
             print("** class name missing **")
         elif cmd not in self.class_list:
             print("** class doesn't exist **")
         else:
-            new = eval(cmd)()
+            new = eval(cmd)()  # Eval makes a str a vatiable
             new.save()
             print(f"{new.id}")
 
@@ -84,7 +84,7 @@ class HBNBCommand(cmd.Cmd):
         dc = storage.all()
 
         if cmd:
-            cmd_list = cmd.split(" ")
+            cmd_list = cmd.split(" ")  # Store the commands in a list
             if len(cmd_list) >= 1:
                 name = cmd_list[0]
 
