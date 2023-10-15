@@ -78,6 +78,7 @@ class HBNBCommand(cmd.Cmd):
         """
         Prints the string representation of an instance
         given the class name and the instance id
+        Prints a list of strings
         """
         name, id = None, None
         dc = storage.all()
@@ -175,7 +176,7 @@ class HBNBCommand(cmd.Cmd):
         cls_name, id, attr_name, attr_val = None, None, None, None
         all_objects = storage.all()
 
-        arg_tuple = cmd.partition(" ")  # Extract the class name
+        arg_tuple = cmd.partition(" ")  # Extract the clsName
         if arg_tuple[0]:
             cls_name = arg_tuple[0]
         else:
@@ -188,33 +189,33 @@ class HBNBCommand(cmd.Cmd):
 
         arg_tuple = arg_tuple[2].partition(" ")  # Skip clsName and " "
         if arg_tuple[0]:
-            id = arg_tuple[0]  # Extract  the id
+            id = arg_tuple[0]  # (<id>, " ", <arguments>)
         else:
             print("** instance id missing **")
             return
 
-        key = f"{cls_name}.{id}"
+        key = f"{cls_name}.{id}"  # Key of storage.all() <clsname.id>
 
         if key not in storage.all():
             print("** no instance found **")
             return
-        item_dict = all_objects[key]
+        item_dict = all_objects[key]  # Key the object
 
         if '{' in arg_tuple[2] and '}' in arg_tuple[2] and\
            type(eval(arg_tuple[2])) is dict:
-            cmd_list = []
+            cmd_list = []  # If args is dict, list it, [key, value]
             for k, v in eval(arg_tuple[2]).items():
                 cmd_list.append(k)
                 cmd_list.append(v)
         else:
             arg = arg_tuple[2]
             arg = arg.strip()
-            if arg and arg.startswith("\""):
-                attr_name = arg[1:arg.find("\"", 1)]
-                arg = arg[arg.find("\"", 1) + 1:]
-            arg = arg.partition(" ")
+            if arg and arg.startswith("\""):  # # Else check for <">
+                attr_name = arg[1:arg.find("\"", 1)]  # Extract btwn ""
+                arg = arg[arg.find("\"", 1) + 1:]  # Move the cursor frwd
+            arg = arg.partition(" ")  # Else partition again
 
-            if not attr_name and arg[0] != " ":
+            if not attr_name and arg[0] != " ":  # if no quotations
                 attr_name = arg[0]
             if arg[2] and arg[2][0] == "\"":
                 attr_val = arg[2][1: arg[2].find("\"", 1)]
@@ -222,7 +223,7 @@ class HBNBCommand(cmd.Cmd):
                 attr_val = arg[2].partition(" ")[0]
             cmd_list = [attr_name, attr_val]
         for i in range(len(cmd_list)):
-            if i % 2 == 0:
+            if i % 2 == 0:  # Parse the commands in two's [Key, Value]
                 attr_name, attr_value = cmd_list[i], cmd_list[i + 1]
                 if not attr_name:
                     print("** attribute name missing **")
@@ -230,11 +231,11 @@ class HBNBCommand(cmd.Cmd):
                 if not attr_value:
                     print("** value missing **")
                     return
-                if hasattr(eval(cls_name)(), attr_name):
-                    attr_value = type(getattr(eval(cls_name),
+                if hasattr(eval(cls_name)(), attr_name):  # If attr exists
+                    attr_value = type(getattr(eval(cls_name),  # cast val
                                               attr_name))(attr_value)
                 setattr(item_dict, attr_name, attr_value)
-                item_dict.save()
+                item_dict.save()  # Save the changes to file.json
 
     def help_update(self):
         """
@@ -258,6 +259,10 @@ class HBNBCommand(cmd.Cmd):
     def default(self, cmd):
         """
         Handles class commands
+        Class commands syntax is:
+            <ClsName>.<Commmand><(Arguments)>
+        if the command syntax is wrong print
+        error message
         """
         line = cmd[:]  # copy the command
         if not("." in line and "(" in line and ")" in line):
