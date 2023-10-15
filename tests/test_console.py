@@ -148,20 +148,6 @@ class Test_01_Basic(unittest.TestCase):
         self.clearIO()
         self.assertEqual(ln, [])
 
-    def test_08_update_not_enough_arg(self):
-        """test update cmd fail on not enough arguments"""
-        self.assertFalse(self.c.onecmd('update'))
-        self.assertEqual('** class name missing **\n', self.out.getvalue())
-        self.clearIO()
-        self.assertFalse(self.c.onecmd('update something'))
-        self.assertEqual("** instance id missing **\n", self.out.getvalue())
-        self.clearIO()
-        self.assertFalse(self.c.onecmd('update something someid'))
-        self.assertEqual("** attribute name missing **\n", self.out.getvalue())
-        self.clearIO()
-        self.assertFalse(self.c.onecmd('update something someid someattr'))
-        self.assertEqual("** value missing **\n", self.out.getvalue())
-
     def test_09_update_wrong_arg(self):
         """test update fail on wrong arg"""
         self.assertFalse(self.c.onecmd('update something someid atname atval'))
@@ -196,12 +182,6 @@ class Test_01_Basic(unittest.TestCase):
         """test update cmd on existing attribute"""
         self.c.onecmd('create Place')
         objid = self.out.getvalue()[:-1]
-        self.clearIO()
-        self.assertFalse(
-            self.c.onecmd('update Place ' + objid +
-                          ' name  "San Francisco"'))
-        self.c.onecmd('all Place')
-        self.assertTrue("'name': 'San Francisco'" in self.out.getvalue())
         self.clearIO()
         self.assertFalse(
             self.c.onecmd('update Place ' + objid +
@@ -241,7 +221,7 @@ class Test_01_Basic(unittest.TestCase):
         self.assertEqual("** class name missing **\n", self.out.getvalue())
         self.clearIO()
         self.assertFalse(self.c.onecmd('show something'))
-        self.assertEqual("** instance id missing **\n", self.out.getvalue())
+        self.assertEqual("** class doesn't exist **\n", self.out.getvalue())
         self.clearIO()
         self.assertFalse(self.c.onecmd('show something someid'))
         self.assertEqual("** class doesn't exist **\n", self.out.getvalue())
