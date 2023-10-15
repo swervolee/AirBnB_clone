@@ -2,7 +2,6 @@
 """
 a base class
 """
-from uuid import uuid4
 import uuid
 from datetime import datetime
 import models
@@ -33,7 +32,7 @@ class BaseModel():
                 else:
                     setattr(self, k, v)
             if "id" not in kwargs:
-                self.id = str(uuid4())
+                self.id = str(uuid.uuid4())
             if "created_at" not in kwargs:
                 self.created_at = datetime.now()
             if "updated_at" not in kwargs:
