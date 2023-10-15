@@ -207,10 +207,10 @@ class HBNBCommand(cmd.Cmd):
                 cmd_list.append(v)
         else:
             arg = arg_tuple[2]
-            if arg and arg[0] == "\"":
-                limit = arg.find("\"", 1)
-                attr_name = arg[1:limit]
-                arg = arg[limit + 1]
+            arg = arg.strip()
+            if arg and arg.startswith("\""):
+                attr_name = arg[1:arg.find("\"", 1)]
+                arg = arg[arg.find("\"", 1) + 1:]
             arg = arg.partition(" ")
 
             if not attr_name and arg[0] != " ":
@@ -282,12 +282,19 @@ class HBNBCommand(cmd.Cmd):
             joined_command = " ".join([cls_name, id])
             self.do_destroy(joined_command)
         if comd == "update":
-            arg = line[line.find("(") + 1 : line.find(")")]
-            arg = arg.split(",")
-            id = arg[0].strip()
-            attr_name = arg[1].strip()
-            attr_value = arg[2].strip()
-            joined = " ".join([cls_name, id, attr_name, attr_value])
+            arg = line[line.find("(", 1) + 1 : line.find(")", 1)]
+            arg = arg.partition(", ")
+            id = arg[0]
+            print(id)
+            cmd2 = arg[2]
+            cmd2 = cmd2.strip()
+            if cmd2 and cmd2[0] == "{" and cmd2[-1] == "}"\
+               and type(eval(cmd2)) is dict:
+                attrs = cmd2
+            else:
+                attrs = cmd2.replace(",", "")
+            joined = " ".join([cls_name, id, attrs])
+            print(joined)
             self.do_update(joined)
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
