@@ -170,11 +170,12 @@ class HBNBCommand(cmd.Cmd):
         """
         Updates a class with new attributes
         or new values
+        command syntax: update <clsname> <id> <attrName> <attrValue>
         """
         cls_name, id, attr_name, attr_val = None, None, None, None
         all_objects = storage.all()
 
-        arg_tuple = cmd.partition(" ")
+        arg_tuple = cmd.partition(" ")  # Extract the class name
         if arg_tuple[0]:
             cls_name = arg_tuple[0]
         else:
@@ -185,9 +186,9 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
 
-        arg_tuple = arg_tuple[2].partition(" ")
+        arg_tuple = arg_tuple[2].partition(" ")  # Skip clsName and " "
         if arg_tuple[0]:
-            id = arg_tuple[0]
+            id = arg_tuple[0]  # Extract  the id
         else:
             print("** instance id missing **")
             return
@@ -258,44 +259,42 @@ class HBNBCommand(cmd.Cmd):
         """
         Handles class commands
         """
-        line = cmd[:]
+        line = cmd[:]  # copy the command
         if not("." in line and "(" in line and ")" in line):
-            print(f"*** Unknown syntax: {cmd}")
+            print(f"*** Unknown syntax: {cmd}")  # <ClsName>.<Command>(Args)
             return
-        cls_name = line[: line.find(".", 1)]
-        if cls_name not in self.class_list:
+        cls_name = line[: line.find(".", 1)]  # extract the cls name
+        if cls_name not in self.class_list:  # Look it up in the clslist
             print(f"*** Unknown syntax: {line}")
             return
-        comd = line[line.find(".", 1) + 1: line.find("(", 1)]
+        comd = line[line.find(".", 1) + 1: line.find("(", 1)]  # Eg update, all
         if comd not in self.dots:
             print(f"*** Unknown syntax: {line}")
             return
-        if comd == "all":
+        if comd == "all":  # prints all the classes in file.json
             self.do_all(cls_name)
-        if comd == "count":
+        if comd == "count":  # Count the number of instances of a class
             self.do_count(cls_name)
-        if comd == "show":
+        if comd == "show":  # prints a string representation of a cls
             id = line[line.find("(", 1) + 1: line.find(")", 1)]
             joined_command = " ".join([cls_name, id])
             self.do_show(joined_command)
-        if comd == "destroy":
+        if comd == "destroy":  # Destroys an instance
             id = line[line.find("(", 1) + 1: line.find(")", 1)]
             joined_command = " ".join([cls_name, id])
             self.do_destroy(joined_command)
-        if comd == "update":
-            arg = line[line.find("(", 1) + 1: line.find(")", 1)]
-            arg = arg.partition(", ")
-            id = arg[0]
-            print(id)
-            cmd2 = arg[2]
-            cmd2 = cmd2.strip()
+        if comd == "update":  # Updates an isntance with new attrs/values
+            arg = line[line.find("(", 1) + 1: line.find(")", 1)]  # Extract
+            arg = arg.partition(", ")  # The args are comma seperated so ..
+            id = arg[0]  # Extract the id which is the first args
+            cmd2 = arg[2]  # Jump id and " ".Extracts args after id
+            cmd2 = cmd2.strip()  # Eliminate trailing whitespaces
             if cmd2 and cmd2[0] == "{" and cmd2[-1] == "}"\
                and type(eval(cmd2)) is dict:
-                attrs = cmd2
+                attrs = cmd2  # If its a dict, take it as it is
             else:
-                attrs = cmd2.replace(",", "")
-            joined = " ".join([cls_name, id, attrs])
-            print(joined)
+                attrs = cmd2.replace(",", "")  # Else eliminate commas
+            joined = " ".join([cls_name, id, attrs])  # Join the commands
             self.do_update(joined)
 
 
